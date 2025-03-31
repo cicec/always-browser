@@ -2,6 +2,7 @@ import { zodResolver } from '@hookform/resolvers/zod';
 import { useForm } from 'react-hook-form';
 import { z } from 'zod';
 import { Send } from 'lucide-react';
+import { WebviewWindow } from '@tauri-apps/api/webviewWindow';
 
 import { Button } from '@/components/ui/button';
 import { Form, FormControl, FormField, FormItem, FormLabel } from '@/components/ui/form';
@@ -11,6 +12,8 @@ import { Alert, AlertDescription, AlertTitle } from '@/components/ui/alert';
 import { Slider } from '@/components/ui/slider';
 import { Label } from '@/components/ui/label';
 import { RadioGroup, RadioGroupItem } from '@/components/ui/radio-group';
+import { useEffect } from 'react';
+import { STORAGE_KEY_BROWSER_FORM_VALUES, USER_AGENT_MAP } from '@/constants/constants';
 
 const formSchema = z.object({
   link: z.string().min(2, {
@@ -20,8 +23,10 @@ const formSchema = z.object({
   userAgent: z.enum(['desktop', 'mobile']),
 });
 
+type FormValues = z.infer<typeof formSchema>;
+
 export function BrowserForm() {
-  const form = useForm<z.infer<typeof formSchema>>({
+  const form = useForm<FormValues>({
     resolver: zodResolver(formSchema),
     defaultValues: {
       link: '',
@@ -30,8 +35,35 @@ export function BrowserForm() {
     },
   });
 
-  function onSubmit(values: z.infer<typeof formSchema>) {
-    console.log(values);
+  useEffect(() => {
+    const formValuesJson = localStorage.getItem(STORAGE_KEY_BROWSER_FORM_VALUES) || '{}';
+    const formValues = JSON.parse(formValuesJson) as FormValues;
+
+    if (Object.keys(formValues).length > 0) {
+      for (const [key, value] of Object.entries(formValues)) {
+        form.setValue(key as keyof FormValues, value);
+      }
+    }
+  }, []);
+
+  function onSubmit(values: FormValues) {
+    const webview = new WebviewWindow('user-link', {
+      url: values.link,
+      userAgent: USER_AGENT_MAP[values.userAgent],
+      alwaysOnTop: true,
+      hiddenTitle: true,
+      // decorations: false,
+      skipTaskbar: true,
+    });
+
+    webview.once('tauri://created', function () {
+      // webview successfully created
+    });
+    webview.once('tauri://error', function (_e) {
+      // an error happened creating the webview
+    });
+
+    localStorage.setItem(STORAGE_KEY_BROWSER_FORM_VALUES, JSON.stringify(values));
   }
 
   return (

@@ -1,6 +1,6 @@
 {
   "$schema": "https://schema.tauri.app/config/2",
-  "productName": "always-browser",
+  "productName": "悬浮网页",
   "version": "0.1.0",
   "identifier": "com.always-browser.app",
   "build": {
