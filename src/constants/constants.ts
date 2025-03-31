@@ -1,3 +1,5 @@
+export const STORE_KEY_WEBVIEW_LINK = 'webview_link';
+
 export const STORAGE_KEY_BROWSER_FORM_VALUES = 'always_browser_form_values';
 
 export const USER_AGENT_CHROME =

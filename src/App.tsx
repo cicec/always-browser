@@ -1,5 +1,5 @@
 import { BrowserForm } from './components/app/browser-form';
-import { ThemeProvider } from '@/components/core/theme-provider';
+import { ThemeProvider } from './components/core/theme-provider';
 
 import './App.css';
 

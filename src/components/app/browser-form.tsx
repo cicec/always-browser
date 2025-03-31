@@ -2,7 +2,6 @@ import { zodResolver } from '@hookform/resolvers/zod';
 import { useForm } from 'react-hook-form';
 import { z } from 'zod';
 import { Send } from 'lucide-react';
-import { WebviewWindow } from '@tauri-apps/api/webviewWindow';
 
 import { Button } from '@/components/ui/button';
 import { Form, FormControl, FormField, FormItem, FormLabel } from '@/components/ui/form';
@@ -14,6 +13,7 @@ import { Label } from '@/components/ui/label';
 import { RadioGroup, RadioGroupItem } from '@/components/ui/radio-group';
 import { useEffect } from 'react';
 import { STORAGE_KEY_BROWSER_FORM_VALUES, USER_AGENT_MAP } from '@/constants/constants';
+import { createWebview } from '@/utils/webview';
 
 const formSchema = z.object({
   link: z.string().min(2, {
@@ -46,25 +46,15 @@ export function BrowserForm() {
     }
   }, []);
 
-  function onSubmit(values: FormValues) {
-    const webview = new WebviewWindow('user-link', {
-      url: values.link,
+  const onSubmit = async (values: FormValues) => {
+    createWebview({
+      label: 'webview',
+      link: values.link,
       userAgent: USER_AGENT_MAP[values.userAgent],
-      alwaysOnTop: true,
-      hiddenTitle: true,
-      // decorations: false,
-      skipTaskbar: true,
-    });
-
-    webview.once('tauri://created', function () {
-      // webview successfully created
-    });
-    webview.once('tauri://error', function (_e) {
-      // an error happened creating the webview
     });
 
     localStorage.setItem(STORAGE_KEY_BROWSER_FORM_VALUES, JSON.stringify(values));
-  }
+  };
 
   return (
     <Card className="w-[480px]">
