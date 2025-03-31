@@ -12,7 +12,7 @@
   "app": {
     "windows": [
       {
-        "title": "always-browser",
+        "title": "悬浮网页",
         "width": 800,
         "height": 600
       }
