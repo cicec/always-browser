@@ -47,13 +47,13 @@ export function BrowserForm() {
   }, []);
 
   const onSubmit = async (values: FormValues) => {
+    localStorage.setItem(STORAGE_KEY_BROWSER_FORM_VALUES, JSON.stringify(values));
+
     createWebview({
       label: 'webview',
       link: values.link,
       userAgent: USER_AGENT_MAP[values.userAgent],
     });
-
-    localStorage.setItem(STORAGE_KEY_BROWSER_FORM_VALUES, JSON.stringify(values));
   };
 
   return (

@@ -8,22 +8,25 @@ type WindowConfig = {
   userAgent?: string;
 };
 
-export const createWebview = (config: WindowConfig) => {
+export const createWebview = async (config: WindowConfig) => {
+  const width = 400;
+  const height = 300;
+
   const webview = new WebviewWindow(config.label, {
     url: 'webview.html',
     title: config.title,
-    width: 800,
-    height: 600,
+    width,
+    height,
     alwaysOnTop: true,
+    zoomHotkeysEnabled: true,
     // decorations: false,
     // transparent: true,
   });
 
   webview.once('tauri://created', async () => {
-    console.log('窗口创建成功');
-
     await listen('fetch_webview_link', async () => {
-      console.log('listen:fetch_webview_link');
+      console.log('listen:fetch_webview_link', config.link);
+
       await emit('set_webview_link', config.link);
     });
   });

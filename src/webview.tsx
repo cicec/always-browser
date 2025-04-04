@@ -1,18 +1,17 @@
 import ReactDOM from 'react-dom/client';
 import React, { useEffect } from 'react';
-import { useWindowScale } from '@/hooks/useWindowScale';
 import { emit, listen } from '@tauri-apps/api/event';
+import { moveWindow, Position } from '@tauri-apps/plugin-positioner';
 
 import './webview.css';
 
 export default function App() {
   useEffect(() => {
-    useWindowScale();
-  }, []);
+    moveWindow(Position.BottomLeft);
 
-  useEffect(() => {
     listen<string>('set_webview_link', e => {
       console.log('listen:set_webview_link', e.payload);
+
       const iframe = document.querySelector<HTMLIFrameElement>('#webview');
 
       if (iframe) {

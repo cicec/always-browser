@@ -15,11 +15,6 @@
         "title": "悬浮网页",
         "width": 800,
         "height": 600
-      },
-      {
-        "title": "网页视图",
-        "width": 800,
-        "height": 600
       }
     ],
     "security": {
